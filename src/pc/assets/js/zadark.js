@@ -244,12 +244,19 @@
       document.documentElement.setAttribute('data-zadark-theme', themeMode)
     },
 
-    setFontFamilyAttr: (fontFamily) => {
+    isValidFontFamily: (fontFamily) => {
+      if (!fontFamily || typeof fontFamily !== 'string') return false
+      return /^[a-zA-Z0-9\s-]+$/.test(fontFamily)
+    },
+
+    setFontFamilyAttr: function (fontFamily) {
       if (!fontFamily) {
         document.querySelector(':root').style.removeProperty('--zadark-font-family')
         document.documentElement.removeAttribute('data-zadark-use-font')
         return
       }
+
+      if (!this.isValidFontFamily(fontFamily)) return
 
       document.querySelector(':root').style.setProperty('--zadark-font-family', fontFamily)
       document.documentElement.setAttribute('data-zadark-use-font', 'true')
@@ -324,12 +331,12 @@
         duration: 1408,
         gravity: 'bottom',
         position: 'center',
-        escapeMarkup: false,
         offset: {
           x: 15,
           y: 15
         },
         ...options,
+        escapeMarkup: true,
         onClick: function () {
           toast.hideToast()
         }
@@ -446,6 +453,11 @@
         this.setFontFamilyAttr('')
         this.showToast('Đã thay đổi phông chữ')
         return true
+      }
+
+      if (!this.isValidFontFamily(fontFamily)) {
+        this.showToast('Tên phông chữ không hợp lệ.')
+        return false
       }
 
       const toast = this.showToast('Đang tải phông chữ...', { duration: -1 })
@@ -683,7 +695,7 @@
     return function (event) {
       if (!isSupportFeatureBlock) {
         ZaDarkUtils.setSwitch(this, false)
-        ZaDarkUtils.showToast(`Vì Zalo nâng cấp mã nguồn, nên chức năng này tạm thời không khả dụng trên <strong>Zalo PC ${ZaDarkStorage.getZaloAppVersion()}</strong>.<br/>ZaDark sẽ cập nhật trong thời gian tới.`, {
+        ZaDarkUtils.showToast(`Vì Zalo nâng cấp mã nguồn, nên chức năng này tạm thời không khả dụng trên Zalo PC ${ZaDarkStorage.getZaloAppVersion()}. ZaDark sẽ cập nhật trong thời gian tới.`, {
           className: 'toastify--error'
         })
         return
@@ -708,8 +720,8 @@
 
     tippy('.js-switch-block', {
       theme: 'zadark',
-      allowHTML: true,
-      content: `<p>Vì Zalo nâng cấp mã nguồn, nên chức năng này tạm thời không khả dụng trên <strong>Zalo PC ${ZaDarkStorage.getZaloAppVersion()}</strong>.</p><p>ZaDark sẽ cập nhật trong thời gian tới.</p>`
+      allowHTML: false,
+      content: `Vì Zalo nâng cấp mã nguồn, nên chức năng này tạm thời không khả dụng trên Zalo PC ${ZaDarkStorage.getZaloAppVersion()}. ZaDark sẽ cập nhật trong thời gian tới.`
     })
   }
 
@@ -1202,12 +1214,12 @@
   const loadTippy = () => {
     tippy('[data-tippy-content]', {
       theme: 'zadark',
-      allowHTML: true
+      allowHTML: false
     })
 
     tippy('#div_Main_TabZaDark', {
       theme: 'zadark',
-      allowHTML: true,
+      allowHTML: false,
       content: 'Cài đặt ZaDark',
       placement: 'right'
     })

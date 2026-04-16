@@ -1,5 +1,13 @@
 (function (global) {
+  function isValidFontParam (value) {
+    return typeof value === 'string' && /^[a-zA-Z0-9\s;,-]+$/.test(value)
+  }
+
   function normalizeFontNameAndWeight (fontName, fontWeight) {
+    if (!isValidFontParam(fontName) || !isValidFontParam(fontWeight)) {
+      return ''
+    }
+
     const normalizedFontName = fontName.replace(/\s+/g, '+')
     const normalizedFontWeight = fontWeight.replace(/\s+/g, '')
 
@@ -10,7 +18,7 @@
     const normalizedFonts = fonts.map(font => {
       const [fontName, fontWeight] = font.trim().split(':')
       return normalizeFontNameAndWeight(fontName, fontWeight)
-    })
+    }).filter(Boolean)
 
     return normalizedFonts.join('&')
   }
