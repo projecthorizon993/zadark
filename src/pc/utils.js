@@ -11,10 +11,9 @@ const printError = (...args) => console.log(chalk.redBright(args.join(' ')))
 const clearScreen = () => console.clear()
 
 const openWebsite = (url) => {
-  const cmd = IS_MAC ? 'open' : 'start'
-  const _url = `"${url}"`
-  const args = IS_MAC ? [_url] : ['""', _url]
-  crossSpawn(cmd, args, { shell: true })
+  const cmd = IS_MAC ? 'open' : 'cmd'
+  const args = IS_MAC ? [url] : ['/c', 'start', '""', url]
+  crossSpawn(cmd, args, { shell: false })
 }
 
 const copyRecursiveSync = (src, dest) => {
